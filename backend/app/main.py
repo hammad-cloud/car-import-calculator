@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
@@ -13,10 +14,13 @@ from .vehicles import VEHICLES
 
 logger = logging.getLogger(__name__)
 
+# Interactive docs are on locally and in Vercel previews; off in production unless ENABLE_API_DOCS=true.
+DOCS_ENABLED = os.getenv("VERCEL_ENV") != "production" or os.getenv("ENABLE_API_DOCS") == "true"
+
 app = FastAPI(
     title="Japan Car Import Calculator API",
-    docs_url="/api/docs",
-    openapi_url="/api/openapi.json",
+    docs_url="/api/docs" if DOCS_ENABLED else None,
+    openapi_url="/api/openapi.json" if DOCS_ENABLED else None,
     redoc_url=None,
 )
 
