@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1220">
+<meta name="format-detection" content="telephone=no">
+<title>Japan Car Import Calculator | Pakistan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #eef2f7;
+    --card: #ffffff;
+    --field: #f5f7fb;
+    --line: #d9e0ea;
+    --text: #0f172a;
+    --muted: #5b6678;
+    --accent: #0284c7;
+    --accent-ink: #ffffff;
+    --accent-soft: rgba(2,132,199,.10);
+    --amber: #b45309;
+    --amber-soft: rgba(245,158,11,.12);
+    --amber-line: rgba(217,119,6,.35);
+    --green: #047857;
+    --green-line: rgba(16,185,129,.45);
+    color-scheme: light;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #070b16; --card: #0f172a; --field: #070b16; --line: #1e293b;
+      --text: #f1f5f9; --muted: #94a3b8;
+      --accent: #38bdf8; --accent-ink: #0b1220; --accent-soft: rgba(56,189,248,.12);
+      --amber: #fbbf24; --amber-soft: rgba(245,158,11,.10); --amber-line: rgba(245,158,11,.32);
+      --green: #34d399; --green-line: rgba(16,185,129,.45);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #070b16; --card: #0f172a; --field: #070b16; --line: #1e293b;
+    --text: #f1f5f9; --muted: #94a3b8;
+    --accent: #38bdf8; --accent-ink: #0b1220; --accent-soft: rgba(56,189,248,.12);
+    --amber: #fbbf24; --amber-soft: rgba(245,158,11,.10); --amber-line: rgba(245,158,11,.32);
+    --green: #34d399; --green-line: rgba(16,185,129,.45);
+    color-scheme: dark;
+  }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+    min-height: 100%;
+    padding: 16px 12px 24px;
+    padding-left: max(12px, env(safe-area-inset-left, 0px));
+    padding-right: max(12px, env(safe-area-inset-right, 0px));
+  }
+  main { width: 100%; max-width: 560px; margin: 0 auto; }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    padding: 20px;
+    box-shadow: 0 20px 50px -20px rgba(0,0,0,.45);
+  }
+  .card > * + * { margin-top: 20px; }
+
+  header { text-align: center; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+  .pill {
+    display: inline-block; font-size: 12px; font-weight: 600; color: var(--accent);
+    background: var(--accent-soft); border-radius: 999px; padding: 4px 12px; margin-bottom: 10px;
+  }
+  h1 { font-size: 22px; line-height: 1.2; font-weight: 800; letter-spacing: -.02em; }
+  header p { font-size: 13px; color: var(--muted); margin-top: 6px; line-height: 1.45; }
+
+  .field + .field { margin-top: 16px; }
+  .row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 7px; }
+  label, .label { font-size: 13px; font-weight: 700; color: var(--muted); }
+  .hint { font-size: 11px; color: var(--muted); white-space: nowrap; }
+  .badge { font-size: 11px; font-weight: 600; color: var(--accent); background: var(--accent-soft); border-radius: 6px; padding: 2px 8px; white-space: nowrap; }
+
+  /* Segmented engine control */
+  .seg { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 5px; background: var(--field); border: 1px solid var(--line); border-radius: 16px; }
+  .seg button {
+    -webkit-appearance: none; appearance: none; border: 0; cursor: pointer;
+    background: transparent; color: var(--muted); border-radius: 12px; padding: 10px 6px;
+    font: inherit; font-size: 16px; font-weight: 700; line-height: 1.2; text-align: center;
+    transition: background-color .15s, color .15s;
+  }
+  .seg button small { display: block; font-size: 11px; font-weight: 500; opacity: .85; margin-top: 3px; }
+  .seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+  .seg button:active { transform: scale(.98); }
+
+  /* Inputs — 16px stops iOS from zooming on focus */
+  .input, select {
+    -webkit-appearance: none; appearance: none;
+    width: 100%; display: block;
+    background: var(--field); color: var(--text);
+    border: 1px solid var(--line); border-radius: 12px;
+    padding: 12px 14px; font: inherit; font-size: 16px; font-weight: 600; line-height: 1.25;
+    outline: none; min-height: 48px;
+  }
+  .input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  select {
+    padding-right: 40px; cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 14px center; background-size: 14px;
+  }
+  .suffix-wrap { position: relative; }
+  .suffix-wrap .input { padding-right: 84px; font-size: 18px; }
+  .suffix { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: 12px; font-weight: 700; color: var(--muted); pointer-events: none; }
+
+  .presets { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .presets button {
+    -webkit-appearance: none; appearance: none; cursor: pointer;
+    background: var(--field); color: var(--text); border: 1px solid var(--line);
+    border-radius: 10px; padding: 7px 11px; font: inherit; font-size: 14px; font-weight: 600;
+  }
+  .presets button:active { transform: scale(.96); }
+
+  .grid3 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
+  .grid3 .field + .field { margin-top: 0; }
+  .grid3 .field label { display: block; margin-bottom: 7px; }
+  @media (min-width: 520px) { .grid3 { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+  /* Breakdown */
+  .breakdown { background: var(--field); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; font-size: 14px; }
+  .line { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 5px 0; color: var(--muted); }
+  .line b { color: var(--text); font-weight: 600; text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .line.total { border-top: 1px solid var(--line); margin-top: 4px; padding-top: 9px; color: var(--text); font-weight: 700; }
+  .line.total b { color: var(--accent); font-weight: 700; }
+  .line .duty { color: var(--amber); }
+
+  .deposit { background: var(--amber-soft); border: 1px solid var(--amber-line); border-radius: 16px; padding: 14px; text-align: center; }
+  .deposit .k { font-size: 12px; font-weight: 700; color: var(--amber); }
+  .deposit .v { font-size: 26px; font-weight: 800; color: var(--amber); margin-top: 4px; font-variant-numeric: tabular-nums; }
+  .deposit .s { font-size: 12px; color: var(--amber); opacity: .85; margin-top: 2px; }
+
+  .grand { border: 1.5px solid var(--green-line); border-radius: 16px; padding: 16px; text-align: center; box-shadow: 0 0 28px -8px var(--green-line); }
+  .grand .k { font-size: 13px; font-weight: 700; color: var(--green); }
+  .grand .v { font-size: 32px; font-weight: 800; letter-spacing: -.02em; color: var(--green); margin-top: 2px; font-variant-numeric: tabular-nums; }
+
+  footer { text-align: center; font-size: 12px; color: var(--muted); margin-top: 14px; }
+
+  @media (max-width: 360px) {
+    .card { padding: 16px; }
+    .grand .v { font-size: 27px; }
+    .hint { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<main>
+  <div class="card">
+    <header>
+      <span class="pill">🚗 Pakistan import duties (SRO)</span>
+      <h1>Japan Car Import Calculator</h1>
+      <p>Total landed cost, customs duty and the 35% deposit to ship.</p>
+    </header>
+
+    <section>
+      <div class="field">
+        <div class="row"><span class="label" id="engineLabel">Engine</span></div>
+        <div class="seg" role="group" aria-labelledby="engineLabel">
+          <button type="button" id="tab1000" aria-pressed="true">1000 cc<small>5-yr cap · Raize/Vitz</small></button>
+          <button type="button" id="tab660" aria-pressed="false">660 cc<small>3-yr cap · Alto/Mira</small></button>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="row">
+          <label for="modelYear">Model year</label>
+          <span class="badge" id="yearCapBadge">Allowed: 2021</span>
+        </div>
+        <select id="modelYear"></select>
+      </div>
+
+      <div class="field">
+        <div class="row">
+          <label for="bidJpy">Winning bid (JPY in '000)</label>
+          <span class="hint">1,950 = 1,950,000 JPY</span>
+        </div>
+        <div class="suffix-wrap">
+          <input class="input" type="text" id="bidJpy" inputmode="numeric" autocomplete="off" value="1,950">
+          <span class="suffix">'000 JPY</span>
+        </div>
+        <div class="presets" id="presets">
+          <button type="button" data-bid="950">950k</button>
+          <button type="button" data-bid="1200">1.2M</button>
+          <button type="button" data-bid="1500">1.5M</button>
+          <button type="button" data-bid="1950">1.95M</button>
+          <button type="button" data-bid="2300">2.3M</button>
+        </div>
+      </div>
+
+      <div class="grid3">
+        <div class="field">
+          <label for="jpyRate">JPY → PKR rate</label>
+          <input class="input" type="text" id="jpyRate" inputmode="decimal" autocomplete="off" value="1.82">
+        </div>
+        <div class="field">
+          <label for="freight">Freight (JPY)</label>
+          <input class="input" type="text" id="freight" inputmode="numeric" autocomplete="off" value="250,000">
+        </div>
+        <div class="field">
+          <label for="passportFee">Gift scheme (PKR)</label>
+          <input class="input" type="text" id="passportFee" inputmode="numeric" autocomplete="off" value="320,000">
+        </div>
+        <div class="field">
+          <label for="otherExpense">Clearance (PKR)</label>
+          <input class="input" type="text" id="otherExpense" inputmode="numeric" autocomplete="off" value="200,000">
+        </div>
+      </div>
+    </section>
+
+    <div class="breakdown">
+      <div class="line"><span>Winning bid</span><b id="bidJpyDisplay">0 JPY</b></div>
+      <div class="line"><span>Ocean freight</span><b id="freightJpyDisplay">0 JPY</b></div>
+      <div class="line total"><span>Total in JPY</span><b id="totalJpyDisplay">0 JPY</b></div>
+      <div class="line"><span>Vehicle cost in PKR</span><b id="totalJpyPkr">PKR 0</b></div>
+      <div class="line"><span>Customs duty (SRO)</span><b class="duty" id="dutyPkr">PKR 0</b></div>
+      <div class="line"><span>Gift scheme</span><b id="passportPkr">PKR 0</b></div>
+      <div class="line"><span>Port &amp; local clearance</span><b id="otherPkr">PKR 0</b></div>
+    </div>
+
+    <div class="deposit">
+      <div class="k">⚡ Pay now to ship (35%)</div>
+      <div class="v" id="initialPayPkr">PKR 0</div>
+      <div class="s" id="initialPayJpy">(0 JPY)</div>
+    </div>
+
+    <div class="grand">
+      <div class="k">Total estimated landed cost</div>
+      <div class="v" id="grandTotal">PKR 0</div>
+    </div>
+  </div>
+  <footer>Based on Pakistan Customs SRO import valuations. Estimates only.</footer>
+</main>
+
+<script>
+(function () {
+  var duties = {
+    '660':  { 2023: 1071000, 2024: 1247000, 2025: 1421000 },
+    '1000': { 2021: 1000000, 2022: 1820000, 2023: 2050000, 2024: 2280000, 2025: 2520000 }
+  };
+  var defaultFreight = { '660': 200000, '1000': 250000 };
+  var years = {
+    '1000': [['2021','2021 (5-year cap)']],
+    '660':  [['2025','2025 (latest)'],['2024','2024'],['2023','2023 (3-year cap)']]
+  };
+  var cc = '1000';
+
+  // Default gift scheme cost: Mira/660cc 2024-2025 = 350,000, everything else 320,000
+  function defaultPassport() {
+    var y = $('modelYear').value;
+    return (cc === '660' && (y === '2024' || y === '2025')) ? 350000 : 320000;
+  }
+  function applyPassportDefault() { $('passportFee').value = commas(defaultPassport()); }
+
+  function $(id) { return document.getElementById(id); }
+  function commas(n) {
+    if (!isFinite(n)) return '0';
+    return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+  function num(id) {
+    var v = String($(id).value).replace(/,/g, '').replace(/[^\d.]/g, '');
+    var n = parseFloat(v);
+    return isFinite(n) ? n : 0;
+  }
+  function setText(id, t) { $(id).textContent = t; }
+
+  function buildYears() {
+    var sel = $('modelYear');
+    var prev = sel.value || '2025';
+    while (sel.firstChild) sel.removeChild(sel.firstChild);
+    var list = years[cc], found = false;
+    for (var i = 0; i < list.length; i++) {
+      var o = document.createElement('option');
+      o.value = list[i][0];
+      o.textContent = list[i][1];
+      sel.appendChild(o);
+      if (list[i][0] === prev) found = true;
+    }
+    sel.value = found ? prev : list[0][0];
+  }
+
+  function selectEngine(next) {
+    cc = next;
+    $('tab1000').setAttribute('aria-pressed', cc === '1000' ? 'true' : 'false');
+    $('tab660').setAttribute('aria-pressed', cc === '660' ? 'true' : 'false');
+    setText('yearCapBadge', cc === '1000' ? 'Allowed: 2021' : 'Allowed: 2023–2025');
+    $('freight').value = commas(defaultFreight[cc]);
+    buildYears();
+    applyPassportDefault();
+    calculate();
+  }
+
+  function formatInt(el) {
+    var raw = el.value.replace(/[^\d]/g, '');
+    el.value = raw ? commas(parseInt(raw, 10)) : '';
+  }
+
+  function calculate() {
+    var year = parseInt($('modelYear').value, 10) || 2025;
+    var rate = num('jpyRate');
+    var bid = num('bidJpy') * 1000;
+    var freight = num('freight');
+    var passport = num('passportFee');
+    var other = num('otherExpense');
+    var duty = duties[cc][year] || 0;
+
+    var totalJpy = bid + freight;
+    var totalPkr = totalJpy * rate;
+    var grand = totalPkr + duty + passport + other;
+
+    setText('bidJpyDisplay', commas(bid) + ' JPY');
+    setText('freightJpyDisplay', commas(freight) + ' JPY');
+    setText('totalJpyDisplay', commas(totalJpy) + ' JPY');
+    setText('totalJpyPkr', 'PKR ' + commas(totalPkr));
+    setText('dutyPkr', 'PKR ' + commas(duty));
+    setText('passportPkr', 'PKR ' + commas(passport));
+    setText('otherPkr', 'PKR ' + commas(other));
+    setText('initialPayPkr', 'PKR ' + commas(totalPkr * 0.35));
+    setText('initialPayJpy', '(' + commas(totalJpy * 0.35) + ' JPY)');
+    setText('grandTotal', 'PKR ' + commas(grand));
+  }
+
+  // Events (attached here instead of inline onclick so every browser behaves the same)
+  $('tab1000').addEventListener('click', function () { selectEngine('1000'); });
+  $('tab660').addEventListener('click', function () { selectEngine('660'); });
+  $('modelYear').addEventListener('change', function () { applyPassportDefault(); calculate(); });
+  $('jpyRate').addEventListener('input', function () {
+    this.value = this.value.replace(/[^\d.]/g, '').replace(/(\..*)\./g, '$1');
+    calculate();
+  });
+  ['bidJpy', 'freight', 'passportFee', 'otherExpense'].forEach(function (id) {
+    $(id).addEventListener('input', function () { formatInt(this); calculate(); });
+  });
+  $('presets').addEventListener('click', function (e) {
+    var b = e.target.closest ? e.target.closest('button[data-bid]') : null;
+    if (!b) return;
+    $('bidJpy').value = commas(parseInt(b.getAttribute('data-bid'), 10));
+    calculate();
+  });
+
+  $('freight').value = commas(defaultFreight[cc]);
+  buildYears();
+  applyPassportDefault();
+  calculate();
+})();
+</script>
+</body>
+</html>

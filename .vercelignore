@@ -1,0 +1,11 @@
+node_modules
+frontend/node_modules
+frontend/dist
+.venv
+backend/tests
+backend/functions
+backend/src
+backend/package.json
+netlify.toml
+**/__pycache__
+.pytest_cache
