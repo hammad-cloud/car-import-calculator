@@ -1,0 +1,18 @@
+[build]
+  command = "npm ci --prefix frontend && npm run build --prefix frontend"
+  publish = "frontend/dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# API: each file in backend/functions is a Netlify Function, routed via its `config.path` (/api/...).
+[functions]
+  directory = "backend/functions"
+  node_bundler = "esbuild"
+
+# Local: `netlify dev` serves the Vite app and the functions together on http://localhost:8888
+[dev]
+  command = "npm run dev --prefix frontend"
+  targetPort = 5173
+  port = 8888
+  framework = "#custom"

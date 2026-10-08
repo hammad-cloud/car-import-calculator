@@ -1,0 +1,13 @@
+{
+  "name": "car-import-calculator-backend",
+  "version": "1.0.0",
+  "description": "Netlify Functions API for the Japanese car import cost calculator (Pakistan)",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test \"tests/**/*.test.js\""
+  }
+}
